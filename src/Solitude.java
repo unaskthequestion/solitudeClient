@@ -13,12 +13,9 @@ import java.util.Vector;
 
 public class Solitude extends PApplet {
 	
-	Vector shapes = new Vector();
-	Shape sh = new Shape(this, Color.red);
-	float mx, my;
+	Vector<Shape> shapes = new Vector<Shape>();
+	boolean bAddHandle = false;
 	
-	Handle [] handles;
-	int num;
 
 	/*
 	 * Public Methods
@@ -30,48 +27,60 @@ public class Solitude extends PApplet {
 		fill(0,128);
 		smooth();
 		
-		num = width/15;
-		handles = new Handle[num];
-		int hsize = 10;
-		int vsize = 10;
-		for (int i = 0; i < num	; i++) {
-//			handles[i] = new Handle(this, width/2, 10+i*15, 50-hsize/2, 10, handles);
-			handles[i] = new Handle(this, 10+i*15, height/2, 50-vsize/2, 10, handles);
-		}
+		shapes.add( new Shape(this) );
 	}
 
 	public void draw() {
 		background(255);
-		sh.draw();
 		
-		for (int i = 0; i < num; i++) {
-			handles[i].update();
-			handles[i].display();
+		for (int i = 0; i < shapes.size(); i++) {
+			shapes.elementAt(i).update();
 		}
 		
-		if(mousePressed){
-			float dy = dist(mx,my,mouseX,mouseY)/2;
-			line(mx,my-dy, mx, my+dy);
+		for (int i = 0; i < shapes.size(); i++) {
+			shapes.elementAt(i).draw();
 		}
 	}
 	
 	public void mousePressed(){
+		if(bAddHandle)
+			shapes.elementAt(0).add(mouseX, mouseY);
 	}
 	
 	public void mouseDragged(){
-		for (int i = 0; i < num; i++) {
-			if(handles[i].press)
-				println(handles[i].getLength());
-			else if(handles[i].pressC)
-				println(handles[i].getX()+" "+handles[i].getY());
-				
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			shapes.elementAt(i).mouseDragged();
 		}
 		
 	}
 	
 	public void mouseReleased(){
-		for (int i = 0; i < num; i++) {
-			handles[i].release();
+
+		for (int i = 0; i < shapes.size(); i++) {
+			shapes.elementAt(i).mouseReleased();
+		}
+	}
+	
+	public void keyPressed(){
+		switch (key) {
+		case '+':
+			bAddHandle = true;
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	public void keyReleased(){
+		switch (key) {
+		case '+':
+			bAddHandle = false;
+			break;
+
+		default:
+			break;
 		}
 	}
 

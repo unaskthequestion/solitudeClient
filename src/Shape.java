@@ -4,60 +4,84 @@ import java.awt.Color;
 import java.util.Vector;
 
 public class Shape {
-	private Vector grains = new Vector();
+
 	private PApplet parent;
-	private Color color = Color.gray;
-	private float r,g,b;
-	private float a = 128;
+	
+	Vector<Handle> handles = new Vector<Handle>();
+	
+	int color = 0xCCccCCcc;
+	float r,g,b = 128;
+	float a = 128;
+	
+	/******
+	 * TODO
+	 * bOver - for hittest
+	 */
 	
 	public Shape(PApplet p){
 		parent = p;
-		r = color.getRed();
-		g = color.getGreen();
-		b = color.getBlue();
 	}
 	
-	public Shape(PApplet p, Color c){
+	public Shape(PApplet p, int c){
 		parent = p;
 		color = c;
-		r = color.getRed();
-		g = color.getGreen();
-		b = color.getBlue();
 	}
 	
 	public void add(float x, float y){
-		grains.add(new Grain(x,y));
+		handles.add(new Handle(parent, (int)x, (int)y, handles));
 	}
 	
-	public void add(float x, float y, float thickness){
-		grains.add(new Grain(x,y,thickness));
+	public void update(){
+		for (int i = 0; i < handles.size(); i++) {
+			handles.elementAt(i).update();
+		}
 	}
 	
 	public void draw(){
-		parent.fill(r,g,b,a);
-		
+		parent.fill(color);
 		/*****
 		 * beginShape();
 		 * for(i=0; i<grains.size()) - vertex([i].x, [i].y-([i].th/2))
 		 * for(i=grains.size()-1; i<=0) - vertex([i].x, [i].y+([i].th/2))
 		 * endShape();
 		 */
+		parent.beginShape();
+		for (int i = 0; i < handles.size(); i++) {
+			float x = handles.elementAt(i).getTopX();
+			float y = handles.elementAt(i).getTopY();
+			parent.vertex(x, y);
+		}
+
+		for (int i = handles.size()-1; i >= 0; i--) {
+			float x = handles.elementAt(i).getBottomX();
+			float y = handles.elementAt(i).getBottomY();
+			parent.vertex(x, y);
+		}
+		parent.endShape();
 		
-		/*float px = ((Grain)grains.elementAt(0)).x;
-		float py = ((Grain)grains.elementAt(0)).y;
-		float pth = ((Grain)grains.elementAt(0)).thickness;
-		for (int i = 0; i < grains.size(); i++) {
-			Grain g = (Grain)grains.elementAt(i);
-			float gx = g.x;
-			float gy = g.y;
-			float th = g.thickness;
-			
-			//
-			
-			px = gx;
-			py = gy;
-			pth = th;
-			
-		}*/
+
+		for (int i = 0; i < handles.size(); i++) {
+			handles.elementAt(i).display();
+		}
+	}
+	
+	public void mousePressed(){
+		
+	}
+	
+	public void mouseReleased(){
+		for (int i = 0; i < handles.size(); i++) {
+			handles.elementAt(i).release();
+		}
+	}
+	
+	public void mouseDragged(){
+		for (int i = 0; i < handles.size(); i++) {
+			if(handles.elementAt(i).press)
+				System.out.println(handles.elementAt(i).getLength());
+			else if(handles.elementAt(i).pressC)
+				System.out.println(handles.elementAt(i).getX()+" "+handles.elementAt(i).getY());
+				
+		}
 	}
 }

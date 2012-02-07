@@ -1,4 +1,5 @@
 import processing.core.*;
+import java.util.Vector;
 
 class Handle {
 	PApplet parent;
@@ -13,9 +14,25 @@ class Handle {
 	boolean lockedC = false;
 	boolean otherslocked = false;
 	boolean otherslockedC = false;
-	Handle[] others;
+	Vector<Handle> others;
+	int color = 0xcccccc;
 
-	Handle(PApplet p, int ix, int iy, int il, int is, Handle[] o){
+	Handle(PApplet p, int ix, int iy, Vector<Handle> o){
+		parent = p;
+		x = ix;
+		y = iy;
+		length = 50;
+		size = 10;
+		boxCx = x - size/2;
+		boxCy = y - size/2;
+		box1x = x - size/2;
+		box1y = y+length - size/2;
+		box2x = box1x;
+		box2y = y-length - size/2;
+		others = o;
+	}
+	
+	Handle(PApplet p, int ix, int iy, int il, int is, Vector<Handle> o){
 		parent = p;
 		x = ix;
 		y = iy;
@@ -38,15 +55,15 @@ class Handle {
 		box2x = box1x;
 		box2y = y-length;
 
-		for(int i=0; i<others.length; i++) {
-			if(others[i].locked == true) {
+		for(int i=0; i<others.size(); i++) {
+			if(others.elementAt(i).locked == true) {
 				otherslocked = true;
 				break;
 			} else {
 				otherslocked = false;
 			}  
 
-			if(others[i].lockedC == true) {
+			if(others.elementAt(i).lockedC == true) {
 				otherslockedC = true;
 				break;
 			} else {
@@ -162,5 +179,25 @@ class Handle {
 	
 	int getY(){
 		return y;
+	}
+	
+	int getTopX(){
+		return x;
+	}
+	
+	int getTopY(){
+		return y-length;
+	}
+	
+	int getBottomX(){
+		return x;
+	}
+	
+	int getBottomY(){
+		return y+length;
+	}
+	
+	void setColor(int c){
+		
 	}
 }
