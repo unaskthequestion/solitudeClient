@@ -15,7 +15,10 @@ class Handle {
 	boolean otherslocked = false;
 	boolean otherslockedC = false;
 	Vector<Handle> others;
-	int color = 0xcccccc;
+	int fillColor;
+	int strokeColor;
+	int fillAlpha = 64;
+	int strokeAlpha = 128;
 
 	Handle(PApplet p, int ix, int iy, Vector<Handle> o){
 		parent = p;
@@ -30,6 +33,9 @@ class Handle {
 		box2x = box1x;
 		box2y = y-length - size/2;
 		others = o;
+		
+		fillColor = parent.color(255,64);
+		strokeColor = parent.color(0, 128);
 	}
 	
 	Handle(PApplet p, int ix, int iy, int il, int is, Vector<Handle> o){
@@ -45,15 +51,18 @@ class Handle {
 		box2x = box1x;
 		box2y = y-length - size/2;
 		others = o;
+
+		fillColor = parent.color(255, fillAlpha);
+		strokeColor = parent.color(0, strokeAlpha);
 	}
 
 	void update() {
 		boxCx = x - size/2;
-		boxCy = y;
+		boxCy = y - size/2;
 		box1x = x - size/2;
-		box1y = y+length;
+		box1y = y+length - size/2;
 		box2x = box1x;
-		box2y = y-length;
+		box2y = y-length - size/2;
 
 		for(int i=0; i<others.size(); i++) {
 			if(others.elementAt(i).locked == true) {
@@ -92,23 +101,24 @@ class Handle {
 	}
 
 	void over(){
+		if(!parent.mousePressed){
+			if(overRect(boxCx, boxCy, size, size)) {
+				overC = true;
+			} else {
+				overC = false;
+			}
 
-		if(overRect(boxCx, boxCy, size, size)) {
-			overC = true;
-		} else {
-			overC = false;
-		}
-		
-		if(overRect(box1x, box1y, size, size)) {
-			over1 = true;
-		} else {
-			over1 = false;
-		}
+			if(overRect(box1x, box1y, size, size)) {
+				over1 = true;
+			} else {
+				over1 = false;
+			}
 
-		if(overRect(box2x, box2y, size, size)) {
-			over2 = true;
-		} else {
-			over2 = false;
+			if(overRect(box2x, box2y, size, size)) {
+				over2 = true;
+			} else {
+				over2 = false;
+			}
 		}
 	}
 
@@ -134,11 +144,11 @@ class Handle {
 		lockedC = false;
 	}
 
-	void display() {
+	void draw() {
 		parent.line(x, y, x, y+length);
 		parent.line(x, y, x, y-length);
-		parent.fill(255);
-		parent.stroke(0);
+		parent.fill(fillColor);
+		parent.stroke(strokeColor);
 		parent.rect(box1x, box1y, size, size);
 		parent.rect(box2x, box2y, size, size);
 		parent.rect(boxCx, boxCy, size, size);
@@ -158,7 +168,7 @@ class Handle {
 
 	boolean overRect(int x, int y, int width, int height) {
 		if (parent.mouseX >= x && parent.mouseX <= x+width && 
-				parent.mouseY >= y && parent.mouseY <= y+height) {
+				parent.mouseY >= y && parent.mouseY <= y+height ) {
 			return true;
 		} else {
 			return false;
@@ -197,7 +207,18 @@ class Handle {
 		return y+length;
 	}
 	
-	void setColor(int c){
-		
+	/*
+	void setColor(int f, int s){
+		fillColor = f;
+		strokeColor = s;
 	}
+	
+	void fill(int c){
+		fillColor = c;
+	}
+	
+	void stroke(int c){
+		strokeColor = c;
+	}
+	*/
 }

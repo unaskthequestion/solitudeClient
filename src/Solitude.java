@@ -12,10 +12,14 @@ import java.awt.Color;
 import java.util.Vector;
 
 public class Solitude extends PApplet {
-	
+	/*
 	Vector<Shape> shapes = new Vector<Shape>();
-	boolean bAddHandle = false;
 	
+	int currentShape = 0;
+	boolean bAddHandle = false;
+	*/
+	
+	Vector<Player> players = new Vector<Player>();
 
 	/*
 	 * Public Methods
@@ -27,42 +31,56 @@ public class Solitude extends PApplet {
 		fill(0,128);
 		smooth();
 		
-		shapes.add( new Shape(this) );
+//		shapes.add( new Shape(this, color(255,238,135,200)) );
+		players.add(new Player(this));
 	}
 
 	public void draw() {
 		background(255);
-		
+		/*
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).update();
 		}
 		
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).draw();
+		}*/
+		
+		for (int i = 0; i < players.size(); i++) {
+			players.elementAt(i).draw();
 		}
 	}
 	
 	public void mousePressed(){
-		if(bAddHandle)
-			shapes.elementAt(0).add(mouseX, mouseY);
+//		if(bAddHandle)	shapes.elementAt(currentShape).add(mouseX, mouseY);
+		for (int i = 0; i < players.size(); i++) {
+			players.elementAt(i).mousePressed();
+		}
 	}
 	
 	public void mouseDragged(){
-		
+		/*
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).mouseDragged();
+		}*/
+		for (int i = 0; i < players.size(); i++) {
+			players.elementAt(i).mouseDragged();
 		}
 		
 	}
 	
 	public void mouseReleased(){
-
+/*
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).mouseReleased();
+		}*/
+		for (int i = 0; i < players.size(); i++) {
+			players.elementAt(i).mouseReleased();
 		}
 	}
 	
 	public void keyPressed(){
+		/*
 		switch (key) {
 		case '+':
 			bAddHandle = true;
@@ -71,9 +89,14 @@ public class Solitude extends PApplet {
 		default:
 			break;
 		}
+		*/
+		for (int i = 0; i < players.size(); i++) {
+			players.elementAt(i).keyPressed();
+		}
 	}
 	
 	public void keyReleased(){
+		/*
 		switch (key) {
 		case '+':
 			bAddHandle = false;
@@ -82,11 +105,22 @@ public class Solitude extends PApplet {
 		default:
 			break;
 		}
+		*/
+		for (int i = 0; i < players.size(); i++) {
+			players.elementAt(i).keyReleased();
+		}
 	}
-
 	/*
 	 * Private Methods
 	 */
 
+	
+
+	/*
+	static public void main(String args[]) {
+	    PApplet.main(new String[] { "Solitude" });
+	  }
+	  */
+	
 }
 

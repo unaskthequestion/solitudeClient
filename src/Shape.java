@@ -9,9 +9,9 @@ public class Shape {
 	
 	Vector<Handle> handles = new Vector<Handle>();
 	
-	int color = 0xCCccCCcc;
-	float r,g,b = 128;
-	float a = 128;
+	float alpha = 128;
+	int color;
+	
 	
 	/******
 	 * TODO
@@ -20,6 +20,7 @@ public class Shape {
 	
 	public Shape(PApplet p){
 		parent = p;
+		color =  parent.color(0,alpha);
 	}
 	
 	public Shape(PApplet p, int c){
@@ -29,6 +30,10 @@ public class Shape {
 	
 	public void add(float x, float y){
 		handles.add(new Handle(parent, (int)x, (int)y, handles));
+	}
+	
+	public void erase(int i){
+		handles.remove(i);
 	}
 	
 	public void update(){
@@ -61,7 +66,7 @@ public class Shape {
 		
 
 		for (int i = 0; i < handles.size(); i++) {
-			handles.elementAt(i).display();
+			handles.elementAt(i).draw();
 		}
 	}
 	
@@ -83,5 +88,10 @@ public class Shape {
 				System.out.println(handles.elementAt(i).getX()+" "+handles.elementAt(i).getY());
 				
 		}
+	}
+	
+	public void setColor(int c){
+		color = c;
+		
 	}
 }
