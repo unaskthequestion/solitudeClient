@@ -18,6 +18,7 @@ public class Shape {
 	
 	/******
 	 * TODO
+	 * 	-	delete handles
 	 * 	- 	add handles in-between existing ones
 	 */
 	
@@ -44,7 +45,7 @@ public class Shape {
 	
 	public void add(float x, float y){
 		// add a handle
-		if(x < parent.width - SolitudeClient.controlP5Width)
+		if(x < parent.width - SolitudeClient._CONTROLP5WIDTH)
 			handles.add(new Handle(parent, (int)x, (int)y, handles));
 	}
 	
