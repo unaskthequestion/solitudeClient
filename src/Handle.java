@@ -87,8 +87,8 @@ class Handle {
 
   boolean overRect(int x, int y, int width, int height) 
   {
-    if (parent.mouseX >= x && parent.mouseX <= x+parent.width && 
-    		parent.mouseY >= y && parent.mouseY <= y+parent.height) {
+    if (parent.mouseX >= x && parent.mouseX <= x+width && 
+    		parent.mouseY >= y && parent.mouseY <= y+height) {
       return true;
     } else {
       return false;
