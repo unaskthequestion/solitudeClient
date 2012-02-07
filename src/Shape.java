@@ -6,33 +6,49 @@ import java.util.Vector;
 public class Shape {
 
 	private PApplet parent;
+	PGraphics fbo; // an off-screen buffer for mouseOver testing
 	
-	Vector<Handle> handles = new Vector<Handle>();
+	Vector<Handle> handles = new Vector<Handle>();	// this shapes' handles
 	
-	float alpha = 128;
-	int color;
+	float alpha;			// fill color alpha
+	int color, colorOver;	// fill color and mouseOver color
+	
+	boolean bOver;			// is mouse over the shape?
 	
 	
 	/******
 	 * TODO
-	 * bOver - for hittest
+	 * 	- 	add handles in-between existing ones
 	 */
 	
 	public Shape(PApplet p){
 		parent = p;
+		setup();
 		color =  parent.color(0,alpha);
 	}
 	
 	public Shape(PApplet p, int c){
 		parent = p;
 		color = c;
+		setup();
+	}
+	
+	void setup(){
+		// set up an off-screen buffer for mouseOver testing
+		fbo = parent.createGraphics(parent.width,parent.height, PApplet.P2D);
+		bOver = false;
+		// color setup
+		alpha = 128;
+		colorOver = parent.color(255,0,0, alpha);
 	}
 	
 	public void add(float x, float y){
+		// add a handle
 		handles.add(new Handle(parent, (int)x, (int)y, handles));
 	}
 	
-	public void erase(int i){
+	public void remove(int i){
+		// remove a handle
 		handles.remove(i);
 	}
 	
@@ -40,16 +56,21 @@ public class Shape {
 		for (int i = 0; i < handles.size(); i++) {
 			handles.elementAt(i).update();
 		}
+		
+		// check if mouse is over this shape
+		isOver();
 	}
 	
 	public void draw(){
-		parent.fill(color);
-		/*****
-		 * beginShape();
-		 * for(i=0; i<grains.size()) - vertex([i].x, [i].y-([i].th/2))
-		 * for(i=grains.size()-1; i<=0) - vertex([i].x, [i].y+([i].th/2))
-		 * endShape();
-		 */
+		// draw to off-screen buffer for mouseOver testing
+		drawToFbo();
+		
+		// change color if mouse is over this shape
+		if(bOver) 	parent.fill(colorOver);
+		else		parent.fill(color);
+		
+		// draw the shape
+//		parent.fill(color);		
 		parent.beginShape();
 		for (int i = 0; i < handles.size(); i++) {
 			float x = handles.elementAt(i).getTopX();
@@ -64,10 +85,11 @@ public class Shape {
 		}
 		parent.endShape();
 		
-
+		// draw this shapes' handles
 		for (int i = 0; i < handles.size(); i++) {
 			handles.elementAt(i).draw();
 		}
+		
 	}
 	
 	public void mousePressed(){
@@ -81,6 +103,7 @@ public class Shape {
 	}
 	
 	public void mouseDragged(){
+		// just some feedback to console
 		for (int i = 0; i < handles.size(); i++) {
 			if(handles.elementAt(i).press)
 				System.out.println(handles.elementAt(i).getLength());
@@ -91,7 +114,36 @@ public class Shape {
 	}
 	
 	public void setColor(int c){
-		color = c;
-		
+		// change fill color
+		color = c;		
+	}
+	
+	void isOver(){
+		// check if mouse is over this shape
+		if(fbo.get(parent.mouseX, parent.mouseY) == 0){
+			bOver = false;
+		}else{
+			bOver = true;
+		}
+	}
+	
+	public void drawToFbo(){
+		// draw to off-screen buffer for mouseOver testing
+		fbo.beginDraw();
+		fbo.fill(0);
+		fbo.beginShape();
+		for (int i = 0; i < handles.size(); i++) {
+			float x = handles.elementAt(i).getTopX();
+			float y = handles.elementAt(i).getTopY();
+			fbo.vertex(x, y);
+		}
+
+		for (int i = handles.size()-1; i >= 0; i--) {
+			float x = handles.elementAt(i).getBottomX();
+			float y = handles.elementAt(i).getBottomY();
+			fbo.vertex(x, y);
+		}
+		fbo.endShape();
+		fbo.endDraw();
 	}
 }

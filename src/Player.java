@@ -1,14 +1,20 @@
+/****
+ *  A Player has many Shapes
+ */
+
 import processing.core.*;
+
 import java.util.Vector;
+
+
 
 public class Player {
 	
-	PApplet parent;
+	PApplet parent;	// for accessing processing methods
+	Vector<Shape> shapes = new Vector<Shape>();	// shapes in one player
 	
-	Vector<Shape> shapes = new Vector<Shape>();
-	
-	int currentShape = 0;
-	boolean bAddHandle = false;
+	int currentShape = 0;	// keeping track of editable shape (?)
+	boolean bAddHandle = false; // to know when to add a handle
 	
 
 	/*
@@ -17,14 +23,16 @@ public class Player {
 
 	public Player(PApplet p){
 		parent = p;
-		
-		shapes.add( new Shape(parent, parent.color(255,238,135,200)) );
+		setup();
 	}
 	
 	public void setup() {
+		// first shape by default
+		shapes.add( new Shape(parent, parent.color(255,238,135,200)) );
 	}
 
 	public void draw() {		
+		// update and draw all shapes for this player
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).update();
 		}
@@ -32,14 +40,16 @@ public class Player {
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).draw();
 		}
+		
 	}
 	
 	public void mousePressed(){
+		// add a handle
 		if(bAddHandle)	shapes.elementAt(currentShape).add(parent.mouseX, parent.mouseY);
 	}
 	
 	public void mouseDragged(){
-		
+		// pass mouseEvent to every shape
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).mouseDragged();
 		}
@@ -47,7 +57,7 @@ public class Player {
 	}
 	
 	public void mouseReleased(){
-
+		// pass mouseEvent to every shape
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).mouseReleased();
 		}
@@ -55,7 +65,7 @@ public class Player {
 	
 	public void keyPressed(){
 		switch (parent.key) {
-		case '+':
+		case '+':	// start adding handles
 			bAddHandle = true;
 			break;
 
@@ -66,7 +76,7 @@ public class Player {
 	
 	public void keyReleased(){
 		switch (parent.key) {
-		case '+':
+		case '+':	// stop adding handles
 			bAddHandle = false;
 			break;
 

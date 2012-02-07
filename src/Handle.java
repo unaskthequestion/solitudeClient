@@ -6,19 +6,19 @@ class Handle {
 	int x, y;
 	int box1x, box1y, box2x, box2y; // box1 = bottom , box2 = top
 	int boxCx, boxCy; // central box
-	int length;
-	int size;
-	boolean over1,over2, overC;
-	boolean press, pressC;
-	boolean locked = false;
-	boolean lockedC = false;
-	boolean otherslocked = false;
+	int length;		// length of the handle
+	int size;		// box size
+	boolean over1,over2, overC;	// check if over any box
+	boolean press, pressC;		// chek if pressed on any box
+	boolean locked = false;		// locked top and bottom boxes
+	boolean lockedC = false;	// locked central box
+	boolean otherslocked = false;	// are other handles' boxes locked?
 	boolean otherslockedC = false;
-	Vector<Handle> others;
-	int fillColor;
-	int strokeColor;
-	int fillAlpha = 64;
-	int strokeAlpha = 128;
+	Vector<Handle> others;		// the other handles
+	int fillColor;				// box color
+	int strokeColor;			// line color
+	int fillAlpha = 64;			// box alpha
+	int strokeAlpha = 128;		// line alpha
 
 	Handle(PApplet p, int ix, int iy, Vector<Handle> o){
 		parent = p;
@@ -57,6 +57,7 @@ class Handle {
 	}
 
 	void update() {
+		// move boxes to place
 		boxCx = x - size/2;
 		boxCy = y - size/2;
 		box1x = x - size/2;
@@ -145,6 +146,7 @@ class Handle {
 	}
 
 	void draw() {
+		parent.stroke(strokeColor, 32);
 		parent.line(x, y, x, y+length);
 		parent.line(x, y, x, y-length);
 		parent.fill(fillColor);
