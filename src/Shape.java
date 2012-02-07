@@ -44,7 +44,8 @@ public class Shape {
 	
 	public void add(float x, float y){
 		// add a handle
-		handles.add(new Handle(parent, (int)x, (int)y, handles));
+		if(x < parent.width - SolitudeClient.controlP5Width)
+			handles.add(new Handle(parent, (int)x, (int)y, handles));
 	}
 	
 	public void remove(int i){
@@ -145,5 +146,18 @@ public class Shape {
 		}
 		fbo.endShape();
 		fbo.endDraw();
+	}
+	
+	public float[][] getInfo(){
+		float info[][] = new float[handles.size()][3];
+		
+		for (int i = 0; i < info.length; i++) {
+			info[i][0] = PApplet.norm(handles.elementAt(i).getX(), 0, parent.width);
+			info[i][1] = PApplet.norm(handles.elementAt(i).getY(), 0, parent.height);
+			info[i][2] = PApplet.norm(handles.elementAt(i).getLength()*2, 0, parent.height);
+			
+//			System.out.println(i+"- x: "+info[i][0]+" y: "+info[i][1]+" th: "+info[i][2]);
+		}
+		return info;
 	}
 }

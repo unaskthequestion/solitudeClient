@@ -84,4 +84,10 @@ public class Player {
 			break;
 		}
 	}
+	
+	public float[][] getInfo(){
+		// get the info from a single shape
+		float info[][] = shapes.firstElement().getInfo();
+		return info;
+	}
 }
