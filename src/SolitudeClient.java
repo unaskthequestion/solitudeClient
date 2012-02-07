@@ -21,6 +21,7 @@ public class SolitudeClient extends PApplet {
 //	Vector<Player> players = new Vector<Player>();
 	Vector<Shape> shapes	= new Vector<Shape>();
 	boolean bAddHandle	= false;
+	String sAddHandle = "Add Handles";
 	int currentShape	= 0;
 
 	/*
@@ -40,6 +41,7 @@ public class SolitudeClient extends PApplet {
 	}
 
 	public void draw() {
+		
 		background(255);
 		
 		stroke(255-32);
@@ -110,7 +112,9 @@ public class SolitudeClient extends PApplet {
 		int buttonW = controlP5Width;
 		int buttonH = 20;
 		int vOffset = 2;
-		controlP5.addToggle("addHandle", false, width - buttonW, 0, buttonW, buttonH);
+		controlP5.addToggle("addHandle", false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
+		controlP5.addTextlabel("labelAdd","ADD",width - buttonW+5, 5);
+		controlP5.addTextlabel("labelEdit","EDIT",width - 45, 5);
 		controlP5.addButton("send",0, width - buttonW, buttonH+vOffset, buttonW, buttonH);
 		
 		
