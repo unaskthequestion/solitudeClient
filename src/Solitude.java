@@ -56,33 +56,22 @@ public class Solitude extends PApplet {
 	}
 	
 	public void mousePressed(){
-//		println("pressed at "+mouseX+" "+mouseY);
-//		mx = mouseX;
-//		my = mouseY;
 	}
 	
 	public void mouseDragged(){
 		for (int i = 0; i < num; i++) {
-			if(handles[i].getPressed())
+			if(handles[i].press)
 				println(handles[i].getLength());
+			else if(handles[i].pressC)
+				println(handles[i].getX()+" "+handles[i].getY());
+				
 		}
 		
 	}
 	
 	public void mouseReleased(){
-//		println("released at "+mouseX+" "+mouseY+" - thickness: "+abs(my-mouseY));
-		/*float dst = dist(mx,my,mouseX,mouseY);
-		
-		if(dst > 2){
-			sh.add(mx, my, dst);
-		}else{
-			sh.add(mx, my, 10);
-		}*/
-		
 		for (int i = 0; i < num; i++) {
 			handles[i].release();
-//			if(handles[i].getPressed())
-//				println(handles[i].getLength());
 		}
 	}
 
