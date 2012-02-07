@@ -104,4 +104,12 @@ class Handle {
   { 
     return  PApplet.min(PApplet.max(val, minv), maxv); 
   } 
+  
+  int getLength(){
+	  return length;
+  }
+  
+  boolean getPressed(){
+	  return press;
+  }
 }
