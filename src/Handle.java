@@ -3,7 +3,7 @@ import processing.core.*;
 class Handle {
 	PApplet parent;
   int x, y;
-  int boxx, boxy;
+  int boxx, boxy, box2x, box2y;
   int length;
   int size;
   boolean over;
@@ -18,15 +18,19 @@ class Handle {
     y = iy;
     length = il;
     size = is;
-    boxx = x+length - size/2;
-    boxy = y - size/2;
+//    boxx = x+length - size/2;
+//    boxy = y - size/2;
+    boxx = x - size/2;
+    boxy = y+length - size/2;
     others = o;
   }
   
   void update() 
   {
-    boxx = x+length;
-    boxy = y - size/2;
+//    boxx = x+length;
+//    boxy = y - size/2;
+	    boxx = x - size/2;
+	    boxy = y+length;
     
     for(int i=0; i<others.length; i++) {
       if(others[i].locked == true) {
@@ -43,7 +47,8 @@ class Handle {
     }
     
     if(press) {
-      length = lock(parent.mouseX-parent.width/2-size/2, 0, parent.width/2-size-1);
+//      length = lock(parent.mouseX-parent.width/2-size/2, 0, parent.width/2-size-1);
+    	length = lock(parent.mouseY-parent.height/2-size/2, 0, parent.height/2-size-1);
     }
   }
   
@@ -73,7 +78,7 @@ class Handle {
   
   void display() 
   {
-    parent.line(x, y, x+length, y);
+    parent.line(x, y, x, y+length);
     parent.fill(255);
     parent.stroke(0);
     parent.rect(boxx, boxy, size, size);
