@@ -195,19 +195,27 @@ public class SolitudeClient extends PApplet {
 		// Send button
 		controlP5.addButton("send",0, width - buttonW, buttonH+offset+10, buttonW, buttonH);
 		// IP and PORT
-		Textlabel ipLabel = controlP5.addTextlabel("ipLabel", "Host IP", width - buttonW, (buttonH+offset)*2+20);
-		ipLabel.setColorValueLabel(color(0));
+//		Textlabel ipLabel = controlP5.addTextlabel("ipLabel", "Host IP", width - buttonW, (buttonH+offset)*2+20);
+//		ipLabel.setColorValueLabel(color(0));
 		
-		ipTextfield = controlP5.addTextfield("ip", width - buttonW, (buttonH+offset)*3+10, buttonW, buttonH);
+		ipTextfield = controlP5.addTextfield("ip", width - buttonW, (buttonH+offset)*3+10, buttonW-10, buttonH);
 		ipTextfield.setText(HOST);
 		ipTextfield.setAutoClear(false);
+		ipTextfield.setColorLabel(color(0));
+		ipTextfield.setColorBackground(color(228));
+		ipTextfield.setColorValueLabel(color(128));
+		ipTextfield.captionLabel().style().marginTop = -32;
 		
-		Textlabel portLabel = controlP5.addTextlabel("portLabel", "Port", width - buttonW, (buttonH+offset)*4+20);
-		portLabel.setColorValueLabel(color(0));
+//		Textlabel portLabel = controlP5.addTextlabel("portLabel", "Port", width - buttonW, (buttonH+offset)*4+20);
+//		portLabel.setColorValueLabel(color(0));
 		
-		portTextfield = controlP5.addTextfield("port", width - buttonW, (buttonH+offset)*5+10, buttonW, buttonH);
+		portTextfield = controlP5.addTextfield("port", width - buttonW, (buttonH+offset)*4+20, buttonW-10, buttonH);
 		portTextfield.setText(Integer.toString(PORT));
 		portTextfield.setAutoClear(false);
+		portTextfield.setColorLabel(color(0));
+		portTextfield.setColorBackground(color(228));
+		portTextfield.setColorValueLabel(color(128));
+		portTextfield.captionLabel().style().marginTop = -32;
 		
 		// Player buttons
 		for (int i = 0; i < SolitudeClient.NUM_PLAYERS; i++) {
