@@ -34,26 +34,29 @@ public class SolitudeClient extends PApplet {
 	
 	ControlP5 controlP5;
 	int buttonValue		= 0;
-	static int _CONTROLP5WIDTH 	= 100;
+	static final int CONTROLP5_WIDTH 	= 100;
 	
 //	Vector<Player> players = new Vector<Player>();
 	int playerID = 0;
-	static int _NUM_PLAYERS = 8;
+	static final int NUM_PLAYERS = 8;
 	Vector<Shape> shapes	= new Vector<Shape>();
 	boolean bAddHandle	= false;
 	String sAddHandle = "Add Handles";
 	int currentShape	= 0;
 	
 	NetAddress remoteLocation;
-	static String _HOST = "127.0.0.1";
-	static int	_PORT = 12000;
+	static String HOST = "127.0.0.1";
+	static int	PORT = 12000;
+	
+	final int CANVAS_WIDTH = screen.width - CONTROLP5_WIDTH;
+	final int CANVAS_HEIGHT = 480;
 
 	/*
 	 * Public Methods
 	 */
 
 	public void setup() {
-		size(screen.width,480);
+		size(CANVAS_WIDTH+CONTROLP5_WIDTH,CANVAS_HEIGHT);
 //		background(255);
 		fill(0,128);
 		smooth();
@@ -63,7 +66,7 @@ public class SolitudeClient extends PApplet {
 //		players.add(new Player(this));
 		shapes.add( new Shape(this, color(255,238,135,200))); // just one shape for now
 		
-		remoteLocation = new NetAddress(_HOST, _PORT);
+		remoteLocation = new NetAddress(HOST, PORT);
 	}
 
 	public void draw() {
@@ -71,8 +74,8 @@ public class SolitudeClient extends PApplet {
 		background(255);
 		
 		stroke(255-32);
-		line(0, height/2, width, height/2);
-		line(width/2, 0, width/2, height);
+		line(0, height/2, CANVAS_WIDTH, CANVAS_HEIGHT/2);
+		line(CANVAS_WIDTH/2, 0, CANVAS_WIDTH/2, CANVAS_HEIGHT);
 		
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).update();
@@ -115,14 +118,14 @@ public class SolitudeClient extends PApplet {
 		println(name);
 		
 		if(name == "addHandle") bAddHandle = !bAddHandle;
-		if(name == "send") send(0);
+		if(name == "send") sendOsc((int)theEvent.value());
 		// PLAYER N buttons
-		for(int i=0; i < SolitudeClient._NUM_PLAYERS; i++){
+		for(int i=0; i < SolitudeClient.NUM_PLAYERS; i++){
 			if(Integer.parseInt(name.substring(name.length()-1)) == i+1) this.playerID = i+1; // set playerID
 		}
 	}
 	
-	public void send(int theValue){
+	public void sendOsc(int theValue){
 //		println("a button event from send: "+buttonValue);
 		println("\nThe following info should be sent:\n");
 		float [][] info = shapes.firstElement().getInfo();
@@ -148,17 +151,17 @@ public class SolitudeClient extends PApplet {
 
 	public void setGUI(){
 		controlP5 = new ControlP5(this);
-		int buttonW = _CONTROLP5WIDTH;
+		int buttonW = CONTROLP5_WIDTH;
 		int buttonH = 20;
-		int vOffset = 2;
+		int offset = 2;
 		controlP5.addToggle("addHandle", false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
 		controlP5.addTextlabel("labelAdd","ADD",width - buttonW+5, 5);
 		controlP5.addTextlabel("labelEdit","EDIT",width - 45, 5);
-		controlP5.addButton("send",0, width - buttonW, buttonH+vOffset, buttonW, buttonH);
+		controlP5.addButton("send",0, width - buttonW, buttonH+offset, buttonW, buttonH);
 		
 		// Player buttons
-		for (int i = 0; i < SolitudeClient._NUM_PLAYERS; i++) {
-			controlP5.addButton("player "+(i+1),0, width - buttonW, (buttonH+vOffset)*(i+3), buttonW, buttonH);
+		for (int i = 0; i < SolitudeClient.NUM_PLAYERS; i++) {
+			controlP5.addButton("player "+(i+1),0, width - buttonW, (buttonH+offset)*(i+3), buttonW, buttonH);
 		}
 		
 		

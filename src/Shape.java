@@ -45,7 +45,7 @@ public class Shape {
 	
 	public void add(float x, float y){
 		// add a handle
-		if(x < parent.width - SolitudeClient._CONTROLP5WIDTH)
+		if(x < parent.width - SolitudeClient.CONTROLP5_WIDTH)
 			handles.add(new Handle(parent, (int)x, (int)y, handles));
 	}
 	
@@ -68,11 +68,11 @@ public class Shape {
 		drawToFbo();
 		
 		// change color if mouse is over this shape
-		if(bOver) 	parent.fill(colorOver);
-		else		parent.fill(color);
+//		if(bOver) 	parent.fill(colorOver);
+//		else		parent.fill(color);
 		
 		// draw the shape
-//		parent.fill(color);		
+		parent.fill(color);		
 		parent.beginShape();
 		for (int i = 0; i < handles.size(); i++) {
 			float x = handles.elementAt(i).getTopX();
