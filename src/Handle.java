@@ -98,6 +98,8 @@ class Handle {
 		if(pressC){
 			x = parent.mouseX;
 			y = parent.mouseY;
+			
+			if(x > parent.width - SolitudeClient.CONTROLP5_WIDTH) x = parent.width - SolitudeClient.CONTROLP5_WIDTH;
 		}
 	}
 

@@ -31,8 +31,8 @@ import java.util.zip.*;
 import java.util.regex.*; 
 
 public class SolitudeClient extends PApplet {
-	
 	ControlP5 controlP5;
+	Textfield ipTextfield, portTextfield;
 	int buttonValue		= 0;
 	static final int CONTROLP5_WIDTH 	= 100;
 	
@@ -73,10 +73,13 @@ public class SolitudeClient extends PApplet {
 		
 		background(255);
 		
+		// guides
 		stroke(255-32);
 		line(0, height/2, CANVAS_WIDTH, CANVAS_HEIGHT/2);
 		line(CANVAS_WIDTH/2, 0, CANVAS_WIDTH/2, CANVAS_HEIGHT);
+		line(CANVAS_WIDTH, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 		
+		// shapes
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).update();
 			shapes.elementAt(i).draw();
@@ -118,7 +121,18 @@ public class SolitudeClient extends PApplet {
 		println(name);
 		
 		if(name == "addHandle") bAddHandle = !bAddHandle;
-		if(name == "send") sendOsc((int)theEvent.value());
+		if(name == "send") {
+			sendOsc((int)theEvent.value());
+		}
+//		if(name == "ip") {
+//			HOST = ipTextfield.getText();
+//			remoteLocation = new NetAddress(HOST,PORT);
+//			println("Remote Location: "+remoteLocation.address()+":"+remoteLocation.port());
+//		}
+//		if(name == "port"){
+//			PORT = Integer.parseInt(portTextfield.getText());
+//			println("PORT: "+this.portTextfield.getText());
+//		}
 		// PLAYER N buttons
 		for(int i=0; i < SolitudeClient.NUM_PLAYERS; i++){
 			if(Integer.parseInt(name.substring(name.length()-1)) == i+1) this.playerID = i+1; // set playerID
@@ -134,10 +148,23 @@ public class SolitudeClient extends PApplet {
 			//				println("do nothing...");
 		}
 
+//		if(!remoteLocation.address().toString().equals( ipTextfield.getText() )){
+		if(!ipTextfield.getText().equals(HOST)){
+			HOST = ipTextfield.getText();
+			remoteLocation = new NetAddress(HOST, PORT);
+		}
+		if(!portTextfield.getText().equals(Integer.toString(PORT))){
+			PORT = Integer.parseInt(portTextfield.getText());
+			remoteLocation = new NetAddress(HOST, PORT);
+		}
+
+		
 		OscMessage msg = new OscMessage("/test");
 		msg.add(playerID);
 		msg.add(info);
 		OscP5.flush(msg, remoteLocation);
+
+		println("Sent OSC to: "+remoteLocation.address()+":"+remoteLocation.port());
 	}
 	/*
 	public void addHandle(boolean theFlag){
@@ -151,18 +178,54 @@ public class SolitudeClient extends PApplet {
 
 	public void setGUI(){
 		controlP5 = new ControlP5(this);
-		int buttonW = CONTROLP5_WIDTH;
+		int buttonW = CONTROLP5_WIDTH-5;
 		int buttonH = 20;
 		int offset = 2;
-		controlP5.addToggle("addHandle", false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
-		controlP5.addTextlabel("labelAdd","ADD",width - buttonW+5, 5);
-		controlP5.addTextlabel("labelEdit","EDIT",width - 45, 5);
-		controlP5.addButton("send",0, width - buttonW, buttonH+offset, buttonW, buttonH);
+		
+		// Add - Edit switch
+//		controlP5.addToggle("addHandle", false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
+		Toggle t = controlP5.addToggle("addHandle");//, false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
+		t.setColorActive(color(0,128,0));
+		t.setPosition(width - buttonW, 0);
+		t.setSize(buttonW, buttonH);
+		t.setMode(ControlP5.SWITCH);
+		t.captionLabel().set("   Add       Edit  ");
+		t.captionLabel().style().marginTop = -20;
+
+		// Send button
+		controlP5.addButton("send",0, width - buttonW, buttonH+offset+10, buttonW, buttonH);
+		// IP and PORT
+		Textlabel ipLabel = controlP5.addTextlabel("ipLabel", "Host IP", width - buttonW, (buttonH+offset)*2+20);
+		ipLabel.setColorValueLabel(color(0));
+		
+		ipTextfield = controlP5.addTextfield("ip", width - buttonW, (buttonH+offset)*3+10, buttonW, buttonH);
+		ipTextfield.setText(HOST);
+		ipTextfield.setAutoClear(false);
+		
+		Textlabel portLabel = controlP5.addTextlabel("portLabel", "Port", width - buttonW, (buttonH+offset)*4+20);
+		portLabel.setColorValueLabel(color(0));
+		
+		portTextfield = controlP5.addTextfield("port", width - buttonW, (buttonH+offset)*5+10, buttonW, buttonH);
+		portTextfield.setText(Integer.toString(PORT));
+		portTextfield.setAutoClear(false);
 		
 		// Player buttons
 		for (int i = 0; i < SolitudeClient.NUM_PLAYERS; i++) {
-			controlP5.addButton("player "+(i+1),0, width - buttonW, (buttonH+offset)*(i+3), buttonW, buttonH);
+			controlP5.addButton("player "+(i+1),0, width - buttonW, (buttonH+offset)*(i+7), buttonW, buttonH);
 		}
+		
+//		DropdownList playerslist = controlP5.addDropdownList("players", width - buttonW, (buttonH+offset)*3, buttonW, buttonH);
+//		playerslist.setHeight(8);
+//		playerslist.setItemHeight(buttonH);
+//		playerslist.setBarHeight(buttonH);
+//		playerslist.captionLabel().set("pulldown");
+//		playerslist.captionLabel().style().marginTop = 3;
+//		playerslist.captionLabel().style().marginLeft = 3;
+//		playerslist.valueLabel().style().marginTop = 3;
+//		
+//		for(int i=0; i<8; i++){
+//			playerslist.addItem("player "+i, i);
+//		}
 		
 		
 		/* IMAGE BUTTONS

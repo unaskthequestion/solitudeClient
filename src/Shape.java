@@ -153,7 +153,7 @@ public class Shape {
 		float info[][] = new float[handles.size()][3];
 		
 		for (int i = 0; i < info.length; i++) {
-			info[i][0] = PApplet.norm(handles.elementAt(i).getX(), 0, parent.width);
+			info[i][0] = PApplet.norm(handles.elementAt(i).getX(), 0, parent.width - SolitudeClient.CONTROLP5_WIDTH);
 			info[i][1] = PApplet.norm(handles.elementAt(i).getY(), 0, parent.height);
 			info[i][2] = PApplet.norm(handles.elementAt(i).getLength()*2, 0, parent.height);
 			
