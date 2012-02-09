@@ -1,3 +1,7 @@
+/**
+ * Based on Porcessing's GUI-Handles example.
+ */
+
 import processing.core.*;
 import java.util.Vector;
 
@@ -34,8 +38,8 @@ class Handle {
 		box2y = y-length - size/2;
 		others = o;
 		
-		fillColor = parent.color(255,64);
-		strokeColor = parent.color(0, 128);
+		fillColor = parent.color(255,fillAlpha);
+		strokeColor = parent.color(0, strokeAlpha);
 	}
 	
 	Handle(PApplet p, int ix, int iy, int il, int is, Vector<Handle> o){
@@ -101,6 +105,8 @@ class Handle {
 			
 			if(x > parent.width - SolitudeClient.CONTROLP5_WIDTH) x = parent.width - SolitudeClient.CONTROLP5_WIDTH;
 		}
+		
+		
 	}
 
 	void over(){
@@ -151,20 +157,36 @@ class Handle {
 		parent.stroke(strokeColor, 32);
 		parent.line(x, y, x, y+length);
 		parent.line(x, y, x, y-length);
+		
 		parent.fill(fillColor);
-		parent.stroke(strokeColor);
+		parent.stroke(strokeColor,strokeAlpha);
 		parent.rect(box1x, box1y, size, size);
 		parent.rect(box2x, box2y, size, size);
 		parent.rect(boxCx, boxCy, size, size);
+		
 		if(over1 || over2 || press) {
-			parent.line(box1x, box1y, box1x+size, box1y+size);
-			parent.line(box1x, box1y+size, box1x+size, box1y);
-			parent.line(box2x, box2y, box2x+size, box2y+size);
-			parent.line(box2x, box2y+size, box2x+size, box2y);
+			// cross
+//			parent.line(box1x, box1y, box1x+size, box1y+size);
+//			parent.line(box1x, box1y+size, box1x+size, box1y);
+//			parent.line(box2x, box2y, box2x+size, box2y+size);
+//			parent.line(box2x, box2y+size, box2x+size, box2y);
+			// surrounding circle
+			parent.stroke(0,64);
+			if(over1)	parent.ellipse(box1x+size/2, box1y+size/2, 20, 20);
+			if(over2)	parent.ellipse(box2x+size/2, box2y+size/2, 20, 20);
+			parent.fill(0,32);
+			parent.rect(box1x, box1y, size, size);
+			parent.rect(box2x, box2y, size, size);
 		}
 		if(overC || pressC){
-			parent.line(boxCx, boxCy, boxCx+size, boxCy+size);
-			parent.line(boxCx, boxCy+size, boxCx+size, boxCy);
+			// cross
+//			parent.line(boxCx, boxCy, boxCx+size, boxCy+size);
+//			parent.line(boxCx, boxCy+size, boxCx+size, boxCy);
+			// surrounding circle
+			parent.stroke(0,64);
+			parent.ellipse(boxCx+size/2, boxCy+size/2, 20, 20);
+			parent.fill(0,32);
+			parent.rect(boxCx, boxCy, size, size);
 		}
 
 	}

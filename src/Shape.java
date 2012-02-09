@@ -45,13 +45,25 @@ public class Shape {
 	
 	public void add(float x, float y){
 		// add a handle
-		if(x < parent.width - SolitudeClient.CONTROLP5_WIDTH)
-			handles.add(new Handle(parent, (int)x, (int)y, handles));
+		boolean b = false;
+		for (int i = 0; i < handles.size(); i++) {
+			b = handles.elementAt(i).over1;
+			if(b) break;
+			b = handles.elementAt(i).over2;
+			if(b) break;
+			b = handles.elementAt(i).overC;
+			if(b) break;
+		}
+		if(!b) handles.add(new Handle(parent, (int)x, (int)y, handles));
 	}
 	
 	public void remove(int i){
 		// remove a handle
 		handles.remove(i);
+	}
+	
+	public void removeLast(){
+		if(handles.size() > 2)	handles.remove(handles.size()-1);
 	}
 	
 	public void update(){
