@@ -41,8 +41,6 @@ public class SolitudeClient extends PApplet {
 	
 	ControlP5 gui;
 	Textfield tfIp, tfPort;
-//	Toggle tglEdit;
-	int buttonValue		= 0;
 	static final int CONTROLP5_WIDTH 	= 100;
 
 	//	Vector<Player> players = new Vector<Player>();
@@ -68,11 +66,6 @@ public class SolitudeClient extends PApplet {
 	// player color array for easy accessibility
 	int playerColors[] = {p1color, p2color, p3color, p4color, p5color, p6color, p7color, p8color};
 
-
-	/*
-	 * Public Methods
-	 */
-
 	public void setup() {
 		size(CANVAS_WIDTH+CONTROLP5_WIDTH,CANVAS_HEIGHT);
 		//		background(255);
@@ -81,7 +74,6 @@ public class SolitudeClient extends PApplet {
 
 		setGUI();
 
-		//		players.add(new Player(this));
 		shapes.add( new Shape(this, color(0,32))); // just one shape for now
 
 		remoteLocation = new NetAddress(HOST, PORT);
@@ -117,13 +109,7 @@ public class SolitudeClient extends PApplet {
 	}
 
 	public void keyPressed(){
-//		
-//		if(key == CODED){
-//			if(keyCode == CONTROL){
-//				bEdit = true;
-//				println(bEdit);
-//			}
-//		}
+		// delete last element
 		if(key == BACKSPACE){
 			if(shapes.size() > 0) {
 				shapes.elementAt(0).removeLast();
@@ -141,15 +127,14 @@ public class SolitudeClient extends PApplet {
 	}
 
 	public void sendOsc(int theValue){
-		//		println("a button event from send: "+buttonValue);
-		println("\nThe following info should be sent:\n");
+		println("Sending info");
 		float [][] info = shapes.elementAt(0).getInfo();
 		for (int i = 0; i < info.length; i++) {
 			println("x: "+info[i][0]+"\ty: "+info[i][1]+"\t\tth: "+info[i][2]);
 			//				println("do nothing...");
 		}
 
-		//		if(!remoteLocation.address().toString().equals( ipTextfield.getText() )){
+		// update connection settings
 		if(!tfIp.getText().equals(HOST)){
 			HOST = tfIp.getText();
 			remoteLocation = new NetAddress(HOST, PORT);
@@ -159,6 +144,7 @@ public class SolitudeClient extends PApplet {
 			remoteLocation = new NetAddress(HOST, PORT);
 		}
 
+		// send message
 		if(playerID > 0){
 			OscMessage msg = new OscMessage("/test");
 			msg.add(playerID);
@@ -170,29 +156,15 @@ public class SolitudeClient extends PApplet {
 			println("YOU NEED TO CHOOSE A PLAYER NUMBER!!");
 		}
 	}
-	/*
-	public void addHandle(boolean theFlag){
-		println("Add Handle: "+theFlag);
-//		bAddHandle = theFlag;
-	}*/
 
 	public void controlEvent(ControlEvent theEvent){
 		String name = theEvent.controller().name();
 		println(name);
 
-//		if(name == "addHandle") bEdit = !bEdit;
+		// send OSC!
 		if(name == "send") {
 			sendOsc((int)theEvent.value());
 		}
-		//		if(name == "ip") {
-		//			HOST = ipTextfield.getText();
-		//			remoteLocation = new NetAddress(HOST,PORT);
-		//			println("Remote Location: "+remoteLocation.address()+":"+remoteLocation.port());
-		//		}
-		//		if(name == "port"){
-		//			PORT = Integer.parseInt(portTextfield.getText());
-		//			println("PORT: "+this.portTextfield.getText());
-		//		}
 		
 		// PLAYER N buttons
 		if(name.substring(0,name.length()-2).equals("player")){
@@ -212,23 +184,10 @@ public class SolitudeClient extends PApplet {
 		int buttonH = 20;
 		int offset = 2;
 
-		// Add - Edit switch
-		//		controlP5.addToggle("addHandle", false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
-//		tglEdit = gui.addToggle("addHandle");//, false, width - buttonW, 0, buttonW, buttonH).setMode(ControlP5.SWITCH);
-//		tglEdit.setColorActive(color(0,128,0));
-//		tglEdit.setPosition(width - buttonW, 0);
-//		tglEdit.setSize(buttonW, buttonH);
-//		tglEdit.setMode(ControlP5.SWITCH);
-//		tglEdit.captionLabel().set("   Add       Edit  ");
-//		tglEdit.captionLabel().style().marginTop = -20;
-//		tglEdit.setValue(true);
-
 		// Send button
 		gui.addButton("send",0, width - buttonW, buttonH+offset+10, buttonW, buttonH);
-		// IP and PORT
-		//		Textlabel ipLabel = controlP5.addTextlabel("ipLabel", "Host IP", width - buttonW, (buttonH+offset)*2+20);
-		//		ipLabel.setColorValueLabel(color(0));
 
+		// IP input field
 		tfIp = gui.addTextfield("ip", width - buttonW, (buttonH+offset)*3+10, buttonW-10, buttonH);
 		tfIp.setText(HOST);
 		tfIp.setAutoClear(false);
@@ -237,9 +196,7 @@ public class SolitudeClient extends PApplet {
 		tfIp.setColorValueLabel(color(128));
 		tfIp.captionLabel().style().marginTop = -32;
 
-		//		Textlabel portLabel = controlP5.addTextlabel("portLabel", "Port", width - buttonW, (buttonH+offset)*4+20);
-		//		portLabel.setColorValueLabel(color(0));
-
+		// PORT input field
 		tfPort = gui.addTextfield("port", width - buttonW, (buttonH+offset)*4+20, buttonW-10, buttonH);
 		tfPort.setText(Integer.toString(PORT));
 		tfPort.setAutoClear(false);
@@ -252,30 +209,6 @@ public class SolitudeClient extends PApplet {
 		for (int i = 0; i < SolitudeClient.NUM_PLAYERS; i++) {
 			gui.addButton("player "+(i+1),0, width - buttonW, (buttonH+offset)*(i+7), buttonW, buttonH);
 		}
-
-		//		DropdownList playerslist = controlP5.addDropdownList("players", width - buttonW, (buttonH+offset)*3, buttonW, buttonH);
-		//		playerslist.setHeight(8);
-		//		playerslist.setItemHeight(buttonH);
-		//		playerslist.setBarHeight(buttonH);
-		//		playerslist.captionLabel().set("pulldown");
-		//		playerslist.captionLabel().style().marginTop = 3;
-		//		playerslist.captionLabel().style().marginLeft = 3;
-		//		playerslist.valueLabel().style().marginTop = 3;
-		//		
-		//		for(int i=0; i<8; i++){
-		//			playerslist.addItem("player "+i, i);
-		//		}
-
-
-		/* IMAGE BUTTONS
-		int spriteSize = 64;
-		ControllerSprite sprite = new ControllerSprite(controlP5, loadImage("plus-"+spriteSize+"-blue.png"), spriteSize,spriteSize);
-		sprite.setMask(loadImage("squareButtonMask-"+spriteSize+".png"));
-		sprite.enableMask();
-
-		controlP5.Button b = controlP5.addButton("playButton",100, width - spriteSize, 0, 100,100);
-		b.setSprite(sprite);
-		 */
 	}
 
 
