@@ -11,16 +11,9 @@ public class Shape {
 	Vector<Handle> handles = new Vector<Handle>();	// this shapes' handles
 	
 	float alpha;			// fill color alpha
-	int color, colorOver;	// fill color and mouseOver color
+	int color, colorOver, textColor;	// fill color and mouseOver color
 	
 	boolean bOver;			// is mouse over the shape?
-	
-	
-	/******
-	 * TODO
-	 * 	-	delete handles
-	 * 	- 	add handles in-between existing ones
-	 */
 	
 	public Shape(PApplet p){
 		parent = p;
@@ -41,6 +34,7 @@ public class Shape {
 		// color setup
 		alpha = 128;
 		colorOver = parent.color(255,0,0, alpha);
+		parent.textAlign(parent.CENTER);
 	}
 	
 	public void add(float x, float y){
@@ -79,19 +73,17 @@ public class Shape {
 		// draw to off-screen buffer for mouseOver testing
 		drawToFbo();
 		
-		// change color if mouse is over this shape
-//		if(bOver) 	parent.fill(colorOver);
-//		else		parent.fill(color);
-		
 		// draw the shape
 		parent.fill(color);		
 		parent.beginShape();
+		// along top handels
 		for (int i = 0; i < handles.size(); i++) {
 			float x = handles.elementAt(i).getTopX();
 			float y = handles.elementAt(i).getTopY();
 			parent.vertex(x, y);
 		}
 
+		// along bottom handles
 		for (int i = handles.size()-1; i >= 0; i--) {
 			float x = handles.elementAt(i).getBottomX();
 			float y = handles.elementAt(i).getBottomY();
@@ -129,7 +121,7 @@ public class Shape {
 	
 	public void setColor(int c){
 		// change fill color
-		color = c;		
+		color = c;	
 	}
 	
 	void isOver(){
@@ -168,8 +160,6 @@ public class Shape {
 			info[i][0] = PApplet.norm(handles.elementAt(i).getX(), 0, parent.width - SolitudeClient.CONTROLP5_WIDTH);
 			info[i][1] = PApplet.norm(handles.elementAt(i).getY(), 0, parent.height);
 			info[i][2] = PApplet.norm(handles.elementAt(i).getLength()*2, 0, parent.height);
-			
-//			System.out.println(i+"- x: "+info[i][0]+" y: "+info[i][1]+" th: "+info[i][2]);
 		}
 		return info;
 	}

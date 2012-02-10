@@ -7,9 +7,11 @@ import java.util.Vector;
 
 class Handle {
 	PApplet parent;
-	int x, y;
+	PFont	font;	// font for displaying Y coord
+	int fontSize;	// the font's size
+	int x, y;				// position of the node
 	int box1x, box1y, box2x, box2y; // box1 = bottom , box2 = top
-	int boxCx, boxCy; // central box
+	int boxCx, boxCy, boxCw, boxCh; // central box
 	int length;		// length of the handle
 	int size;		// box size
 	boolean over1,over2, overC;	// check if over any box
@@ -26,12 +28,16 @@ class Handle {
 
 	Handle(PApplet p, int ix, int iy, Vector<Handle> o){
 		parent = p;
+		font = parent.createFont("Monaco.dfont", 24);
 		x = ix;
 		y = iy;
 		length = 50;
 		size = 10;
-		boxCx = x - size/2;
-		boxCy = y - size/2;
+		fontSize = 12;
+		boxCw = size * 3;
+		boxCh = fontSize + 4;
+		boxCx = x - boxCw/2;
+		boxCy = y - boxCh/2;
 		box1x = x - size/2;
 		box1y = y+length - size/2;
 		box2x = box1x;
@@ -40,16 +46,18 @@ class Handle {
 		
 		fillColor = parent.color(255,fillAlpha);
 		strokeColor = parent.color(0, strokeAlpha);
+		parent.textFont(font,fontSize);
 	}
 	
 	Handle(PApplet p, int ix, int iy, int il, int is, Vector<Handle> o){
 		parent = p;
+		font = parent.createFont("Monaco.dfont", 24);
 		x = ix;
 		y = iy;
 		length = il;
 		size = is;
-		boxCx = x - size/2;
-		boxCy = y - size/2;
+		boxCx = x - boxCw/2;
+		boxCy = y - boxCh/2;
 		box1x = x - size/2;
 		box1y = y+length - size/2;
 		box2x = box1x;
@@ -58,12 +66,14 @@ class Handle {
 
 		fillColor = parent.color(255, fillAlpha);
 		strokeColor = parent.color(0, strokeAlpha);
+		parent.textFont(font,12);
+		parent.textAlign(parent.CENTER);
 	}
 
 	void update() {
 		// move boxes to place
-		boxCx = x - size/2;
-		boxCy = y - size/2;
+		boxCx = x - boxCw/2;
+		boxCy = y - boxCh/2;
 		box1x = x - size/2;
 		box1y = y+length - size/2;
 		box2x = box1x;
@@ -100,9 +110,9 @@ class Handle {
 		}
 		
 		if(pressC){
+			// avoid going out of bounds
 			x = parent.mouseX;
 			y = parent.mouseY;
-			
 			if(x > parent.width - SolitudeClient.CONTROLP5_WIDTH) x = parent.width - SolitudeClient.CONTROLP5_WIDTH;
 		}
 		
@@ -111,7 +121,7 @@ class Handle {
 
 	void over(){
 		if(!parent.mousePressed){
-			if(overRect(boxCx, boxCy, size, size)) {
+			if(overRect(boxCx, boxCy, boxCw, boxCh)) {
 				overC = true;
 			} else {
 				overC = false;
@@ -154,23 +164,26 @@ class Handle {
 	}
 
 	void draw() {
+		// lines
 		parent.stroke(strokeColor, 32);
 		parent.line(x, y, x, y+length);
 		parent.line(x, y, x, y-length);
 		
+		// boxes
 		parent.fill(fillColor);
 		parent.stroke(strokeColor,strokeAlpha);
 		parent.rect(box1x, box1y, size, size);
 		parent.rect(box2x, box2y, size, size);
-		parent.rect(boxCx, boxCy, size, size);
 		
+		// center box 
+		parent.rect(boxCx, boxCy, boxCw, boxCh );
+		// text
+		parent.fill(strokeColor);
+		parent.text(parent.str(parent.round(parent.norm(y,0,parent.height) * 400)), boxCx + boxCw/2, boxCy + boxCh*3/4 + 1);
+		parent.fill(fillColor);
+		
+		// selected boxes
 		if(over1 || over2 || press) {
-			// cross
-//			parent.line(box1x, box1y, box1x+size, box1y+size);
-//			parent.line(box1x, box1y+size, box1x+size, box1y);
-//			parent.line(box2x, box2y, box2x+size, box2y+size);
-//			parent.line(box2x, box2y+size, box2x+size, box2y);
-			// surrounding circle
 			parent.stroke(0,64);
 			if(over1)	parent.ellipse(box1x+size/2, box1y+size/2, 20, 20);
 			if(over2)	parent.ellipse(box2x+size/2, box2y+size/2, 20, 20);
@@ -179,14 +192,9 @@ class Handle {
 			parent.rect(box2x, box2y, size, size);
 		}
 		if(overC || pressC){
-			// cross
-//			parent.line(boxCx, boxCy, boxCx+size, boxCy+size);
-//			parent.line(boxCx, boxCy+size, boxCx+size, boxCy);
-			// surrounding circle
 			parent.stroke(0,64);
-			parent.ellipse(boxCx+size/2, boxCy+size/2, 20, 20);
 			parent.fill(0,32);
-			parent.rect(boxCx, boxCy, size, size);
+			parent.rect(boxCx, boxCy, boxCw, boxCh );
 		}
 
 	}
@@ -233,18 +241,7 @@ class Handle {
 		return y+length;
 	}
 	
-	/*
-	void setColor(int f, int s){
-		fillColor = f;
-		strokeColor = s;
+	int getSize(){
+		return size;
 	}
-	
-	void fill(int c){
-		fillColor = c;
-	}
-	
-	void stroke(int c){
-		strokeColor = c;
-	}
-	*/
 }

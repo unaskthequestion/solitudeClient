@@ -100,12 +100,18 @@ public class SolitudeClient extends PApplet {
 
 	public void mousePressed(){
 		if(!bEdit && mouseX < CANVAS_WIDTH) shapes.elementAt(currentShape).add(mouseX, mouseY);
+		sendOsc();
+	}
+	
+	public void mouseDragged(){
+		sendOsc();
 	}
 
 	public void mouseReleased(){
 		for (int i = 0; i < shapes.size(); i++) {
 			shapes.elementAt(i).mouseReleased();
 		}
+		sendOsc();
 	}
 
 	public void keyPressed(){
@@ -126,15 +132,15 @@ public class SolitudeClient extends PApplet {
 		}
 	}
 
-	public void sendOsc(int theValue){
+	public void sendOsc(){
 		println("Sending info");
+		// get the nodes info into an array
 		float [][] info = shapes.elementAt(0).getInfo();
 		for (int i = 0; i < info.length; i++) {
 			println("x: "+info[i][0]+"\ty: "+info[i][1]+"\t\tth: "+info[i][2]);
-			//				println("do nothing...");
 		}
 
-		// update connection settings
+		// check connection settings and update them if needed
 		if(!tfIp.getText().equals(HOST)){
 			HOST = tfIp.getText();
 			remoteLocation = new NetAddress(HOST, PORT);
@@ -160,11 +166,6 @@ public class SolitudeClient extends PApplet {
 	public void controlEvent(ControlEvent theEvent){
 		String name = theEvent.controller().name();
 		println(name);
-
-		// send OSC!
-		if(name == "send") {
-			sendOsc((int)theEvent.value());
-		}
 		
 		// PLAYER N buttons
 		if(name.substring(0,name.length()-2).equals("player")){
@@ -184,11 +185,8 @@ public class SolitudeClient extends PApplet {
 		int buttonH = 20;
 		int offset = 2;
 
-		// Send button
-		gui.addButton("send",0, width - buttonW, buttonH+offset+10, buttonW, buttonH);
-
 		// IP input field
-		tfIp = gui.addTextfield("ip", width - buttonW, (buttonH+offset)*3+10, buttonW-10, buttonH);
+		tfIp = gui.addTextfield("ip", width - buttonW, buttonH, buttonW-10, buttonH);
 		tfIp.setText(HOST);
 		tfIp.setAutoClear(false);
 		tfIp.setColorLabel(color(0));
@@ -197,7 +195,7 @@ public class SolitudeClient extends PApplet {
 		tfIp.captionLabel().style().marginTop = -32;
 
 		// PORT input field
-		tfPort = gui.addTextfield("port", width - buttonW, (buttonH+offset)*4+20, buttonW-10, buttonH);
+		tfPort = gui.addTextfield("port", width - buttonW, (buttonH+offset)*2+20, buttonW-10, buttonH);
 		tfPort.setText(Integer.toString(PORT));
 		tfPort.setAutoClear(false);
 		tfPort.setColorLabel(color(0));
@@ -207,7 +205,7 @@ public class SolitudeClient extends PApplet {
 
 		// Player buttons
 		for (int i = 0; i < SolitudeClient.NUM_PLAYERS; i++) {
-			gui.addButton("player "+(i+1),0, width - buttonW, (buttonH+offset)*(i+7), buttonW, buttonH);
+			gui.addButton("player "+(i+1),0, width - buttonW, (buttonH+offset)*(i+5), buttonW, buttonH);
 		}
 	}
 
