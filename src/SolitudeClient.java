@@ -121,6 +121,8 @@ public class SolitudeClient extends PApplet {
 				shapes.elementAt(0).removeLast();
 			}
 		}
+		
+		sendOsc();
 	}
 
 	public void keyReleased(){
